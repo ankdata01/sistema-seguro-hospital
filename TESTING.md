@@ -77,7 +77,7 @@ Antes de publicar GitHub:
 git status --ignored
 ```
 
-Confirme que `db/clinica.db`, `llaves/`, `.env` y cualquier export de auditoría no estén versionados. Se recomienda además un escáner especializado de secretos en CI.
+Confirme que `db/hospital.db`, `llaves/`, `.env` y cualquier export de auditoría no estén versionados. Se recomienda además un escáner especializado de secretos en CI.
 
 ## 5. Evidencia
 

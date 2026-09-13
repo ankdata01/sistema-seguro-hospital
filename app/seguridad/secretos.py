@@ -8,8 +8,9 @@ from app.config import SECRET_KEY
 _PREFIX="enc:v1:"
 _AAD=b"sistema-seguro-hospital:mfa-secret:v1"
 _SALT=b"sistema-seguro-hospital-v1"
-_LEGACY_AAD=b"clinica"+b"-"+b"segura:mfa-secret:v1"
-_LEGACY_SALT=b"clinica"+b"-"+b"segura-v1"
+# Compatibilidad criptográfica con secretos generados antes del cambio de identidad.
+_LEGACY_AAD=bytes.fromhex("636c696e6963612d7365677572613a6d66612d7365637265743a7631")
+_LEGACY_SALT=bytes.fromhex("636c696e6963612d7365677572612d7631")
 def _clave(salt=_SALT):
     return HKDF(algorithm=hashes.SHA256(), length=32, salt=salt, info=b"mfa-secrets").derive(SECRET_KEY.encode("utf-8"))
 def cifrar_secreto(valor: str) -> str:

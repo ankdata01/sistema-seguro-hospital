@@ -28,7 +28,7 @@ flowchart TD
 |---|---|---|
 | Presentación | `app/presentacion/` | Rutas, formularios, CSRF, cookies, RBAC y plantillas |
 | Autenticación | `app/autenticacion/` | Argon2id, TOTP, JWT y reglas de contraseña |
-| Clínica | `app/clinico/` | Dominio clínico |
+| Dominio clínico | `app/clinico/` | Modelos y operaciones clínicas |
 | Seguridad | `app/seguridad/` | Firma, cifrado de secretos, hash chain, verificación, rate limiter y headers |
 | Datos | `app/datos/` | Repositorios y SQL parametrizado |
 | Ensamblado | `app/fabrica.py` | Composición de dependencias |

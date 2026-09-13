@@ -67,10 +67,10 @@ def main() -> None:
 
     ph = PasswordHasher()
     personal = [
-        {"email":"admin@clinica.mx","nombre":"Admin Sistema","rol":"admin","especialidad":None},
-        {"email":"laura.mendez@clinica.mx","nombre":"Dra. Laura Méndez García","rol":"doctor","especialidad":"Cardiología"},
-        {"email":"carlos.rios@clinica.mx","nombre":"Dr. Carlos Ríos Morales","rol":"doctor","especialidad":"Medicina General"},
-        {"email":"ana.torres@clinica.mx","nombre":"Enf. Ana Torres Vega","rol":"enfermero","especialidad":None},
+        {"email":"admin@hospital.test","nombre":"Admin Sistema","rol":"admin","especialidad":None},
+        {"email":"laura.mendez@hospital.test","nombre":"Dra. Laura Méndez García","rol":"doctor","especialidad":"Cardiología"},
+        {"email":"carlos.rios@hospital.test","nombre":"Dr. Carlos Ríos Morales","rol":"doctor","especialidad":"Medicina General"},
+        {"email":"ana.torres@hospital.test","nombre":"Enf. Ana Torres Vega","rol":"enfermero","especialidad":None},
     ]
     personal_ids: dict[str,str] = {}; llaves_privadas: dict[str,object] = {}
     print("\n--- Personal creado ---")
@@ -91,7 +91,7 @@ def main() -> None:
         pid=str(uuid.uuid4()); paciente_ids.append(pid); con.execute("INSERT INTO pacientes (id,nombre,fecha_nacimiento,contacto) VALUES (?,?,?,?)",(pid,nombre,nacimiento,contacto))
     con.commit()
     juan_id,maria_id,roberto_id,carmen_id=paciente_ids
-    laura_id=personal_ids["laura.mendez@clinica.mx"]; carlos_id=personal_ids["carlos.rios@clinica.mx"]
+    laura_id=personal_ids["laura.mendez@hospital.test"]; carlos_id=personal_ids["carlos.rios@hospital.test"]
 
     citas=[(juan_id,laura_id,_ahora_utc(-60),"agendada",0),(maria_id,carlos_id,_ahora_utc(-45),"atendida",0),(roberto_id,laura_id,_ahora_utc(-30),"cancelada",0),(carmen_id,carlos_id,_ahora_utc(-10),"atendida",1)]
     for pac_id,per_id,fecha,estado,emergencia in citas:
@@ -99,12 +99,12 @@ def main() -> None:
     con.commit()
 
     notas_raw=[
-        ("laura.mendez@clinica.mx",juan_id,"Hipertensión arterial grado I","Losartán 50 mg/día, dieta baja en sodio",-180),
-        ("carlos.rios@clinica.mx",maria_id,"Infección respiratoria superior","Amoxicilina 500 mg cada 8 h por 7 días",-150),
-        ("laura.mendez@clinica.mx",roberto_id,"Diabetes mellitus tipo 2","Metformina 850 mg dos veces al día",-120),
-        ("carlos.rios@clinica.mx",carmen_id,"Gastroenteritis aguda","Suero oral, dieta blanda por 48 h",-90),
-        ("laura.mendez@clinica.mx",juan_id,"Control hipertensión — evolución favorable","Continuar Losartán, agregar amlodipino 5 mg",-45),
-        ("carlos.rios@clinica.mx",maria_id,"Cefalea tensional recurrente","Ibuprofeno 400 mg PRN, técnicas de relajación",-15),
+        ("laura.mendez@hospital.test",juan_id,"Hipertensión arterial grado I","Losartán 50 mg/día, dieta baja en sodio",-180),
+        ("carlos.rios@hospital.test",maria_id,"Infección respiratoria superior","Amoxicilina 500 mg cada 8 h por 7 días",-150),
+        ("laura.mendez@hospital.test",roberto_id,"Diabetes mellitus tipo 2","Metformina 850 mg dos veces al día",-120),
+        ("carlos.rios@hospital.test",carmen_id,"Gastroenteritis aguda","Suero oral, dieta blanda por 48 h",-90),
+        ("laura.mendez@hospital.test",juan_id,"Control hipertensión — evolución favorable","Continuar Losartán, agregar amlodipino 5 mg",-45),
+        ("carlos.rios@hospital.test",maria_id,"Cefalea tensional recurrente","Ibuprofeno 400 mg PRN, técnicas de relajación",-15),
     ]
     hash_prev=HASH_GENESIS
     print("\n--- Notas clínicas firmadas ---")
@@ -125,10 +125,10 @@ def main() -> None:
   (En modo demo: /demo/codigos muestra el TOTP vigente)
 
   Usuarios:
-    admin@clinica.mx          — Administrador del sistema
-    laura.mendez@clinica.mx   — Doctora, Cardiología
-    carlos.rios@clinica.mx    — Doctor, Medicina General
-    ana.torres@clinica.mx     — Enfermera
+    admin@hospital.test          — Administrador del sistema
+    laura.mendez@hospital.test   — Doctora, Cardiología
+    carlos.rios@hospital.test    — Doctor, Medicina General
+    ana.torres@hospital.test     — Enfermera
 
   Pacientes: {len(pacientes)}
   Notas clínicas: {len(notas_raw)} (firmadas y verificables)

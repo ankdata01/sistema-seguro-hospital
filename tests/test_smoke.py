@@ -50,15 +50,15 @@ def test_semilla_e_integridad_inicial():
 
 
 def test_matriz_de_autorizacion_clave():
-    reseed(); enfermera = _login("ana.torres@clinica.mx")
+    reseed(); enfermera = _login("ana.torres@hospital.test")
     assert enfermera.get("/pacientes", follow_redirects=False).status_code == 200
     for ruta in ("/auditoria", "/sesiones", "/auditoria/exportar.csv"):
         r = enfermera.get(ruta, follow_redirects=False); assert r.status_code == 303; assert r.headers["location"].startswith("/panel?error=acceso_denegado")
-    admin = _login("admin@clinica.mx"); r = admin.get("/pacientes", follow_redirects=False); assert r.status_code == 303; assert r.headers["location"].startswith("/panel?error=acceso_denegado"); assert admin.get("/auditoria", follow_redirects=False).status_code == 200
+    admin = _login("admin@hospital.test"); r = admin.get("/pacientes", follow_redirects=False); assert r.status_code == 303; assert r.headers["location"].startswith("/panel?error=acceso_denegado"); assert admin.get("/auditoria", follow_redirects=False).status_code == 200
 
 
 def test_logout_requiere_csrf():
-    reseed(); client = _login("laura.mendez@clinica.mx"); assert client.cookies.get("token")
+    reseed(); client = _login("laura.mendez@hospital.test"); assert client.cookies.get("token")
     r = client.post("/logout", follow_redirects=False); assert r.status_code == 303; assert r.headers["location"] == "/panel?error=csrf"; assert client.cookies.get("token")
     assert client.get("/panel").status_code == 200; csrf = client.cookies["csrf_token"]
     r = client.post("/logout", data={"csrf_token": csrf}, follow_redirects=False); assert r.status_code == 303; assert r.headers["location"] == "/login"; assert not client.cookies.get("token")
@@ -95,12 +95,12 @@ def test_verificador_detecta_hash_anterior_manipulado():
 
 
 def test_restaurar_invalida_sesion_anterior():
-    reseed(); client = _login("laura.mendez@clinica.mx"); assert client.get("/demo").status_code == 200; csrf = client.cookies["csrf_token"]
+    reseed(); client = _login("laura.mendez@hospital.test"); assert client.get("/demo").status_code == 200; csrf = client.cookies["csrf_token"]
     r = client.post("/demo/restaurar", data={"csrf_token": csrf}, follow_redirects=False); assert r.status_code == 303; assert r.headers["location"] == "/login?restaurado=ok"; assert not client.cookies.get("token")
 
 
 def test_secretos_sensibles_cifrados_en_reposo():
-    reseed(); secret = _row("SELECT mfa_secret FROM personal WHERE email = ?", ("laura.mendez@clinica.mx",))["mfa_secret"]; assert secret.startswith("enc:v1:")
+    reseed(); secret = _row("SELECT mfa_secret FROM personal WHERE email = ?", ("laura.mendez@hospital.test",))["mfa_secret"]; assert secret.startswith("enc:v1:")
     pem = LLAVE_SERVIDOR_PRIVADA.read_text(encoding="utf-8"); assert "ENCRYPTED" in pem
 
 
@@ -116,9 +116,9 @@ def test_cambio_de_ip_en_bitacora_rompe_integridad():
 
 
 def test_usuario_desactivado_pierde_sesion_inmediatamente():
-    reseed(); client = _login("laura.mendez@clinica.mx"); assert client.get("/panel", follow_redirects=False).status_code == 200
+    reseed(); client = _login("laura.mendez@hospital.test"); assert client.get("/panel", follow_redirects=False).status_code == 200
     con = sqlite3.connect(DB_PATH)
-    try: con.execute("UPDATE personal SET activo = 0 WHERE email = ?", ("laura.mendez@clinica.mx",)); con.commit()
+    try: con.execute("UPDATE personal SET activo = 0 WHERE email = ?", ("laura.mendez@hospital.test",)); con.commit()
     finally: con.close()
     r = client.get("/panel", follow_redirects=False); assert r.status_code == 303; assert r.headers["location"] == "/login"
 
@@ -131,7 +131,7 @@ def test_cabeceras_de_seguridad_y_visores_demo_restringidos():
 
 def test_desactivar_medico_no_invalida_firmas_historicas():
     reseed(); con = sqlite3.connect(DB_PATH)
-    try: con.execute("UPDATE personal SET activo = 0 WHERE email = ?", ("laura.mendez@clinica.mx",)); con.commit()
+    try: con.execute("UPDATE personal SET activo = 0 WHERE email = ?", ("laura.mendez@hospital.test",)); con.commit()
     finally: con.close()
     con = obtener_conexion()
     try: assert Fabrica(con).ejecutar_verificacion()["firmas_invalidas"] == []

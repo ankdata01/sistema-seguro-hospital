@@ -8,7 +8,7 @@ from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).parent.parent
-DB_PATH = BASE_DIR / "db" / "clinica.db"
+DB_PATH = BASE_DIR / "db" / "hospital.db"
 ESQUEMA_SQL_PATH = BASE_DIR / "db" / "esquema.sql"
 LLAVES_DIR = BASE_DIR / "llaves"
 PLANTILLAS_DIR = Path(__file__).parent / "plantillas"
