@@ -22,6 +22,8 @@
 <div class="alerta alerta-exito">✅ Base de datos restaurada al estado original.</div>
 {% elif restaurado == "error" %}
 <div class="alerta alerta-error">❌ Error al restaurar. Revisa los logs.</div>
+{% elif restaurado == "requires_password_env" %}
+<div class="alerta alerta-error">❌ Para restaurar de forma reproducible define DEMO_PASSWORD en el entorno antes de iniciar la aplicación.</div>
 {% endif %}
 {% if trigger %}
 <div class="alerta alerta-aviso">🛡️ Trigger respondió: <code>{{ trigger }}</code></div>
@@ -54,8 +56,11 @@
   </form>
 </section>
 
+{% if totp_viewer %}
 <section class="demo-seccion">
   <h2>Códigos TOTP vigentes</h2>
+  <p>Visor auxiliar habilitado solo para loopback durante la exposición.</p>
   <a href="/demo/codigos" class="btn-secundario">Ver códigos</a>
 </section>
+{% endif %}
 {% endblock %}

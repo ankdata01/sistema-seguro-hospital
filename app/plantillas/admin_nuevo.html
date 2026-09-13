@@ -44,10 +44,9 @@
 
     <div class="campo">
       <label for="password">Contraseña inicial</label>
-      <input type="text" id="password" name="password" required
-             placeholder="El usuario la cambiará en su primer acceso"
-             autocomplete="off">
-      <small>Esta contraseña también cifra la llave RSA privada del usuario. Entrégala en persona.</small>
+      <input type="password" id="password" name="password" required minlength="12" maxlength="128"
+             placeholder="Mínimo 12 caracteres" autocomplete="new-password">
+      <small>La contraseña cifra la llave RSA privada. No se vuelve a mostrar después del alta.</small>
     </div>
 
     <button type="submit" class="btn-primario">Crear usuario y generar QR →</button>

@@ -31,6 +31,13 @@ class RepoPersonal:
         ).fetchone()
         return dict(fila) if fila else None
 
+    def obtener_por_id_incluyendo_inactivos(self, id: str) -> dict | None:
+        fila = self._con.execute(
+            "SELECT * FROM personal WHERE id = ?",
+            (id,),
+        ).fetchone()
+        return dict(fila) if fila else None
+
     def listar_todos(self) -> list[dict]:
         filas = self._con.execute(
             "SELECT * FROM personal WHERE activo = 1 ORDER BY nombre"

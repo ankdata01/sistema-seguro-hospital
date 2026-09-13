@@ -1,27 +1,12 @@
 {% extends "base.html" %}
 {% block titulo %}Segundo factor — Clínica Segura{% endblock %}
-
 {% block contenido %}
 <div class="caja-centrada">
-  <h1>Verificación en dos pasos</h1>
-  <p>Ingresa el código de 6 dígitos de tu aplicación autenticadora.</p>
-
-  {% if error %}
-  <p class="alerta alerta-error" role="alert">{{ error }}</p>
-  {% endif %}
-
+  <h1>Verificación en dos pasos</h1><p>Ingresa el código de 6 dígitos de tu aplicación autenticadora.</p>
+  {% if error %}<p class="alerta alerta-error" role="alert">{{ error }}</p>{% endif %}
   <form method="post" action="/login/mfa" class="formulario">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
-    <div class="campo">
-      <label for="codigo">Código TOTP</label>
-      <input type="text" id="codigo" name="codigo"
-             inputmode="numeric" pattern="[0-9]{6}"
-             maxlength="6" required autofocus
-             autocomplete="one-time-code"
-             placeholder="000000">
-    </div>
-
+    <div class="campo"><label for="codigo">Código TOTP</label><input type="text" id="codigo" name="codigo" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autofocus autocomplete="one-time-code" placeholder="000000"></div>
     <button type="submit" class="btn-primario">Verificar</button>
   </form>
 </div>

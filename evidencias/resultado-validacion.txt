@@ -1,0 +1,33 @@
+CLINICA SEGURA v1.1.0 - EVIDENCIA DE VALIDACION
+Fecha de revisión: 2026-09-13
+
+[PASS] Compilación Python:
+  python -m compileall -q app db tests
+  Sin errores de compilación.
+
+[PASS] Suite de integración/seguridad en el entorno de construcción:
+  12 passed in 7.93s
+
+Cobertura destacada:
+- semilla e integridad inicial
+- matriz RBAC y accesos denegados
+- CSRF en logout
+- rate limiting
+- concurrencia de la cadena de auditoría
+- detección de manipulación de hash e IP
+- restauración e invalidación de sesión
+- cifrado de TOTP y PEM privado de servidor
+- invalidación de sesión de usuario desactivado
+- cabeceras HTTP y restricción del visor TOTP
+- verificación de firmas históricas de médicos inactivos
+
+NOTA DEL ENTORNO:
+El contenedor de revisión no tenía acceso de red para instalar el paquete oficial pyotp. Sólo para ejecutar localmente las pruebas se utilizó un shim temporal, fuera del repositorio, compatible con la API consumida y TOTP RFC 6238. El shim NO forma parte del entregable. requirements.txt declara pyotp y el workflow de CI instala la dependencia oficial.
+
+[PASS] Política de repositorio:
+- .env.example usa placeholders, no valores secretos.
+- .gitignore excluye .env, SQLite generada, PEM, llaves, QR y caches.
+- el workflow CI genera SECRET_KEY y DEMO_PASSWORD de forma efímera.
+
+Interpretación:
+La evidencia valida el prototipo y las correcciones realizadas. No equivale a una certificación, cumplimiento sanitario ni pentest productivo.

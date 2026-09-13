@@ -1,55 +1,35 @@
-# Revisión de seguridad y hardening
+# Revisión de seguridad v1.1.0
 
-## Propósito
+## Correcciones respecto de v1.0.0
 
-Este documento resume ajustes incorporados durante la revisión técnica previa a la creación del repositorio de demostración.
-
-No representa una auditoría formal de conformidad ni certifica el sistema para uso clínico real.
-
-## Correcciones incorporadas
-
-| Área | Corrección |
+| Hallazgo | Corrección |
 |---|---|
-| Autorización | Se protegió la exportación `/auditoria/exportar.csv` con la misma política RBAC de auditoría |
-| RBAC clínico | Se alineó el acceso a expedientes: doctor, enfermero y administrativo pueden consultar; admin no |
-| Manejo de rutas | Se corrigió el uso de `RedirectResponse` en auditoría |
-| CSRF | Logout valida el token CSRF antes de invalidar la sesión |
-| Rate limiting | Cinco fallos dentro de cinco minutos producen un bloqueo completo de 15 minutos |
-| Cadena hash | El verificador comprueba explícitamente el `hash_anterior` almacenado |
-| Concurrencia | Las inserciones de auditoría utilizan `BEGIN IMMEDIATE` para encadenar de forma serializada |
-| Orden de auditoría | La verificación usa orden de inserción en lugar de depender únicamente del timestamp |
-| Firma | Una firma Base64 corrupta se informa como inválida en vez de provocar una excepción no controlada |
-| Usuarios | El alta detecta emails duplicados incluso cuando la cuenta previa está inactiva |
-| Restauración | Restaurar la demo invalida la sesión previa porque la semilla regenera identidad y claves |
-| SQLite/Windows | La restauración evita mantener una conexión innecesaria mientras sustituye la base de datos |
+| Demo habilitada por defecto | `DEMO_MODE=false` |
+| Fallback de secreto en código | `SECRET_KEY` obligatorio y validado |
+| TOTP en claro en SQLite | AES-256-GCM + HKDF-SHA256 |
+| Llave JWT privada en claro | PEM cifrado con `SECRET_KEY` |
+| IP de auditoría fuera del hash | `ip_origen` incorporada a la cadena |
+| JWT aceptado hasta expirar aunque usuario se desactive | consulta de cuenta activa en cada petición |
+| Claims sin issuer/audience | `iss` y `aud` obligatorios |
+| Login de primer factor etiquetado como completo | separación `PASSWORD_OK` / `LOGIN_OK` |
+| Denegaciones no uniformemente auditadas | administración/auditoría/demo registran `ACCESO_DENEGADO` |
+| Visor TOTP expuesto solo por DEMO_MODE | flag separado, default false, loopback-only |
+| Contraseña demo fija en repo/README/tests | valor efímero o variable de entorno |
+| CI con secreto estático de ejemplo | generación efímera en workflow |
+| Contraseña de alta reimpresa en HTML | ya no se devuelve; mínimo 12 caracteres |
+| Desactivar médico hacía fallar firma histórica | verificador usa llave pública de cuentas inactivas |
+| Falta de cabeceras web | CSP/HSTS/no-store/anti-framing/nosniff |
 
-## Pruebas asociadas
+## Riesgos aceptados
 
-`tests/test_smoke.py` verifica actualmente:
+- SQLite local y rate limiter en memoria.
+- No hay log remoto/WORM.
+- No hay cifrado integral de expediente a nivel de aplicación.
+- No hay HSM/KMS/TSA.
+- TOTP puede ser objeto de phishing en tiempo real.
+- Las operaciones clínica+auditoría no son una transacción distribuida/atómica única.
+- El prototipo depende del endurecimiento del host y de TLS externo para un despliegue real.
 
-1. creación de la semilla e integridad inicial;
-2. MFA y emisión de sesión;
-3. matriz de autorización crítica;
-4. CSRF en logout;
-5. bloqueo de 15 minutos;
-6. 20 escrituras concurrentes de auditoría;
-7. detección de `hash_anterior` manipulado;
-8. invalidación de sesión tras restaurar la demo.
+## Estado
 
-## Riesgos aceptados para la demostración
-
-Los siguientes puntos permanecen deliberadamente fuera del hardening actual:
-
-- `DEMO_MODE=true` puede exponer TOTP vigentes mediante `/demo/codigos`.
-- La clave privada RSA del servidor se almacena localmente sin cifrar.
-- HTTP local implica cookies sin atributo `Secure`.
-- Existe un `SECRET_KEY` de desarrollo como fallback si no se configura el entorno.
-- SQLite + triggers demuestra inmutabilidad lógica, no inmutabilidad física.
-- Nota clínica y auditoría no comparten todavía una única transacción atómica.
-- `ip_origen` no participa en el hash actual de auditoría.
-- El rate limiter es local al proceso y no es adecuado para un despliegue multi-worker.
-- Algunas rutas de presentación aún construyen repositorios o llaman primitivas de seguridad directamente, por lo que la Factory es el punto principal, pero no exclusivo, de composición.
-
-## Criterio de presentación
-
-Durante la exposición estos puntos deben comunicarse como **límites de una demo académica**, no como capacidades de producción. La transparencia sobre el alcance forma parte del análisis de seguridad.
+La versión 1.1.0 satisface los requerimientos académicos de documentación, modelado de amenazas, controles implementados, pruebas y evidencia de repositorio. Esto no constituye auditoría formal ni certificación regulatoria.

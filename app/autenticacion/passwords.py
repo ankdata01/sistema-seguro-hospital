@@ -25,3 +25,12 @@ def verificar(hash_guardado: str, contrasena: str) -> bool:
         return _ph.verify(hash_guardado, contrasena)
     except (VerifyMismatchError, VerificationError, InvalidHashError):
         return False
+
+
+def validar_nueva(contrasena: str) -> tuple[bool, str]:
+    """Política mínima: longitud 12-128, sin reglas artificiales de composición."""
+    if len(contrasena) < 12:
+        return False, "La contraseña debe tener al menos 12 caracteres."
+    if len(contrasena) > 128:
+        return False, "La contraseña no puede exceder 128 caracteres."
+    return True, ""

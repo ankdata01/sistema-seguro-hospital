@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config import ESTATICOS_DIR, PLANTILLAS_DIR, DEMO_MODE
+from app.seguridad.headers import SecurityHeadersMiddleware
 from app.presentacion.dependencias import (
     NoAutenticado, usuario_actual, dep_conexion,
     generar_csrf, set_csrf_cookie,
@@ -20,10 +21,11 @@ from app.presentacion.dependencias import (
 app = FastAPI(
     title="Clínica Segura",
     description="Expediente clínico con autenticidad, no repudio y trazabilidad.",
-    version="1.0.0",
+    version="1.1.0",
     docs_url=None,
     redoc_url=None,
 )
+app.add_middleware(SecurityHeadersMiddleware)
 
 app.mount(
     "/estaticos",

@@ -97,7 +97,7 @@
   </thead>
   <tbody>
     {% for e in entradas %}
-    <tr class="audit-fila-resumen" onclick="toggleDetalle('{{ loop.index }}')" style="cursor:pointer">
+    <tr class="audit-fila-resumen" data-audit-toggle="{{ loop.index }}" style="cursor:pointer">
       <td style="white-space:nowrap">{{ e.fecha_hora[:19].replace("T", " ") }}</td>
       <td>{{ e.personal_id[:8] ~ "…" if e.personal_id else "sistema" }}</td>
       <td>{{ e.accion }}</td>
@@ -145,10 +145,5 @@
 </table>
 </div>
 
-<script>
-function toggleDetalle(idx) {
-  var row = document.getElementById('detalle-' + idx);
-  row.hidden = !row.hidden;
-}
-</script>
+<script src="/estaticos/app.js"></script>
 {% endblock %}

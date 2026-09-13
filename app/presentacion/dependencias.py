@@ -8,26 +8,20 @@ Utilidades CSRF: patrón double-submit cookie.
 import secrets
 
 import jwt
-from fastapi import Request
+from fastapi import Depends, Request
 from fastapi.responses import RedirectResponse
 
 from app.autenticacion import tokens
-from app.config import COOKIE_TOKEN_NOMBRE
+from app.config import COOKIE_TOKEN_NOMBRE, COOKIE_SECURE
 from app.datos.conexion import obtener_conexion
+from app.datos.repo_personal import RepoPersonal
 
 
-# ---------------------------------------------------------------------------
-# Excepción de autenticación — capturada por el handler en main.py
-# ---------------------------------------------------------------------------
 class NoAutenticado(Exception):
     pass
 
 
-# ---------------------------------------------------------------------------
-# Dependencia de conexión SQLite (generador para FastAPI Depends)
-# ---------------------------------------------------------------------------
 def dep_conexion():
-    """Una conexión por petición HTTP; se cierra automáticamente al terminar."""
     con = obtener_conexion()
     try:
         yield con
@@ -35,42 +29,31 @@ def dep_conexion():
         con.close()
 
 
-# ---------------------------------------------------------------------------
-# Dependencia de usuario autenticado
-# ---------------------------------------------------------------------------
-async def usuario_actual(request: Request) -> dict:
-    """
-    Extrae el JWT de la cookie, verifica firma y expiración.
-    Lanza NoAutenticado si falta, expiró o fue alterado.
-    La capa de presentación nunca toca jwt directamente.
-    """
+async def usuario_actual(request: Request, con=Depends(dep_conexion)) -> dict:
     token = request.cookies.get(COOKIE_TOKEN_NOMBRE)
     if not token:
         raise NoAutenticado()
     try:
-        return tokens.validar(token)
-    except jwt.ExpiredSignatureError:
-        raise NoAutenticado()
-    except jwt.InvalidTokenError:
+        claims = tokens.validar(token)
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
         raise NoAutenticado()
 
+    usuario = RepoPersonal(con).obtener_por_id(str(claims.get("sub", "")))
+    if usuario is None or usuario["rol"] != claims.get("rol"):
+        raise NoAutenticado()
+    claims["nombre"] = usuario["nombre"]
+    claims["rol"] = usuario["rol"]
+    return claims
 
-# ---------------------------------------------------------------------------
-# Utilidades CSRF — patrón double-submit cookie
-# ---------------------------------------------------------------------------
+
 COOKIE_CSRF = "csrf_token"
 
 
 def generar_csrf() -> str:
-    """Token aleatorio de 32 bytes en hex."""
     return secrets.token_hex(32)
 
 
 def validar_csrf(request: Request, token_formulario: str | None) -> bool:
-    """
-    Compara el token del formulario con el de la cookie.
-    SameSite=Strict en la cookie ya mitiga CSRF; este check es la segunda capa.
-    """
     token_cookie = request.cookies.get(COOKIE_CSRF)
     if not token_cookie or not token_formulario:
         return False
@@ -78,11 +61,12 @@ def validar_csrf(request: Request, token_formulario: str | None) -> bool:
 
 
 def set_csrf_cookie(response, token: str) -> None:
-    """Adjunta el token CSRF en la cookie de respuesta."""
     response.set_cookie(
         COOKIE_CSRF,
         token,
-        httponly=False,   # JS no lo necesita; False para poder leerlo en tests
+        httponly=True,
         samesite="strict",
+        secure=COOKIE_SECURE,
         max_age=3600,
+        path="/",
     )
