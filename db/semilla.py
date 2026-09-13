@@ -38,7 +38,7 @@ from app.seguridad.llaves import generar_par_rsa, serializar_publica, guardar_pr
 from app.seguridad.secretos import cifrar_secreto
 
 CONTRASENA_DEMO = os.getenv("DEMO_PASSWORD", "").strip() or secrets.token_urlsafe(14)
-ISSUER_TOTP = "Clínica Segura"
+ISSUER_TOTP = "Sistema Seguro: Hospital"
 HASH_GENESIS = "0" * 64
 
 

@@ -28,7 +28,7 @@ from app.presentacion.dependencias import (
 from app.seguridad.llaves import generar_par_rsa, serializar_publica, guardar_privada_cifrada
 from app.seguridad.secretos import cifrar_secreto
 
-ISSUER_TOTP = "Clínica Segura"
+ISSUER_TOTP = "Sistema Seguro: Hospital"
 
 
 def _ip(request: Request) -> str:

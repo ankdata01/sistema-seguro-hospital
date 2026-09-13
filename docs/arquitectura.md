@@ -1,4 +1,4 @@
-# Arquitectura de Clínica Segura v1.1.0
+# Arquitectura de Sistema Seguro: Hospital v1.1.0
 
 ## Propósito
 

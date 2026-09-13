@@ -1,4 +1,4 @@
-# Pruebas y validación — Clínica Segura v1.1.0
+# Pruebas y validación — Sistema Seguro: Hospital v1.1.0
 
 ## 1. Preparación
 

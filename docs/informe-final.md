@@ -1,6 +1,6 @@
 # Portada
 
-**CLÍNICA SEGURA v1.1.0**  
+**SISTEMA SEGURO: HOSPITAL v1.1.0**  
 **Diseño e implementación de controles de ciberseguridad para un expediente clínico electrónico**
 
 Proyecto académico de ciberseguridad  
@@ -13,11 +13,11 @@ Fecha: **13 de septiembre de 2026**
 **Versión evaluada:** 1.1.0  
 **Tecnologías principales:** Python 3.12, FastAPI, Jinja2, SQLite, Argon2id, TOTP, JWT RS256, RSA-PSS, SHA-256 y AES-256-GCM.
 
-> **Nota de alcance.** Clínica Segura es un prototipo académico. Demuestra controles técnicos y un proceso de ingeniería de seguridad, pero no constituye por sí mismo una plataforma clínica certificada ni acredita cumplimiento legal o normativo para expedientes reales.
+> **Nota de alcance.** Sistema Seguro: Hospital es un prototipo académico. Demuestra controles técnicos y un proceso de ingeniería de seguridad, pero no constituye por sí mismo una plataforma clínica certificada ni acredita cumplimiento legal o normativo para expedientes reales.
 
 # Resumen
 
-Clínica Segura v1.1.0 es un prototipo de expediente clínico electrónico diseñado para demostrar de forma verificable autenticidad, integridad, control de acceso, no repudio y trazabilidad. Utiliza autenticación multifactor con Argon2id y TOTP, sesiones JWT RS256, autorización basada en roles, firma RSA-PSS de notas clínicas, hashes SHA-256 y una bitácora encadenada protegida contra modificaciones y eliminaciones por la propia aplicación.
+Sistema Seguro: Hospital v1.1.0 es un prototipo de expediente clínico electrónico diseñado para demostrar de forma verificable autenticidad, integridad, control de acceso, no repudio y trazabilidad. Utiliza autenticación multifactor con Argon2id y TOTP, sesiones JWT RS256, autorización basada en roles, firma RSA-PSS de notas clínicas, hashes SHA-256 y una bitácora encadenada protegida contra modificaciones y eliminaciones por la propia aplicación.
 
 La revisión de esta versión modificó el código para eliminar secretos embebidos, cifrar secretos TOTP en reposo con AES-256-GCM, cifrar la llave privada del servidor, endurecer JWT, revalidar cuentas en cada petición protegida, incluir IP en la cadena de auditoría, fortalecer cookies y cabeceras HTTP, restringir funciones peligrosas de demostración y conservar la verificabilidad de firmas históricas de médicos desactivados.
 
@@ -27,7 +27,7 @@ El análisis usa STRIDE, MITRE ATT&CK, X.800 y Defense in Depth. La validación 
 
 Los sistemas clínicos requieren proteger identidad, autorización, integridad, autoría, confidencialidad, disponibilidad y auditoría. Un control aislado no cubre todos estos objetivos: una contraseña fuerte no evita la manipulación directa de una base de datos, una firma digital no controla quién puede leer un expediente y una bitácora local no equivale a un registro remoto inmutable.
 
-Clínica Segura construye un demostrador pequeño pero técnicamente defendible. La versión 1.1.0 adopta un enfoque **secure by default**: no arranca sin un secreto maestro suficientemente largo, las funciones de demo están deshabilitadas por defecto, las cookies se preparan para transporte seguro y el material criptográfico generado queda excluido del repositorio.
+Sistema Seguro: Hospital construye un demostrador pequeño pero técnicamente defendible. La versión 1.1.0 adopta un enfoque **secure by default**: no arranca sin un secreto maestro suficientemente largo, las funciones de demo están deshabilitadas por defecto, las cookies se preparan para transporte seguro y el material criptográfico generado queda excluido del repositorio.
 
 La metodología combina **STRIDE**, **MITRE ATT&CK**, **ITU-T X.800** y **Defense in Depth**, apoyada por RFC 6238 para TOTP, RFC 7519 para JWT, RFC 8017 para RSA-PSS, NIST SP 800-63B-4 y OWASP ASVS 5.0.0.
 
@@ -37,7 +37,7 @@ La pregunta de ingeniería es: **¿cómo demostrar que una nota clínica fue cre
 
 ## Propósito y alcance funcional
 
-Clínica Segura gestiona usuarios internos, pacientes, historial clínico, creación de notas firmadas, auditoría y un panel controlado para demostrar ataques de integridad. Se ejecuta localmente y no depende de servicios externos para la demostración.
+Sistema Seguro: Hospital gestiona usuarios internos, pacientes, historial clínico, creación de notas firmadas, auditoría y un panel controlado para demostrar ataques de integridad. Se ejecuta localmente y no depende de servicios externos para la demostración.
 
 Activos principales: expedientes y notas; credenciales y hashes; secretos TOTP; JWT; llaves RSA; hashes y firmas; eventos de auditoría; `SECRET_KEY`; base SQLite y archivos criptográficos.
 
@@ -232,7 +232,7 @@ El repositorio final incluye código comentado, README, `.env.example`, modelo d
 
 # Conclusiones
 
-Clínica Segura v1.1.0 evoluciona de una demostración de principios criptográficos a un prototipo con un modelo de seguridad más coherente. La mejora principal consiste en cerrar brechas entre controles: MFA ya no conserva secretos en claro; JWT no mantiene acceso de cuentas deshabilitadas; la IP queda protegida por la cadena; el modo demo se separa del perfil seguro; y las pruebas cubren explícitamente controles críticos.
+Sistema Seguro: Hospital v1.1.0 evoluciona de una demostración de principios criptográficos a un prototipo con un modelo de seguridad más coherente. La mejora principal consiste en cerrar brechas entre controles: MFA ya no conserva secretos en claro; JWT no mantiene acceso de cuentas deshabilitadas; la IP queda protegida por la cadena; el modo demo se separa del perfil seguro; y las pruebas cubren explícitamente controles críticos.
 
 STRIDE mostró amenazas de identidad, integridad, evidencia, confidencialidad, disponibilidad y privilegios. MITRE ATT&CK relacionó escenarios con técnicas adversarias; X.800 distinguió servicios de seguridad; Defense in Depth confirmó distribución de controles desde repositorio/navegador hasta criptografía, persistencia y auditoría.
 

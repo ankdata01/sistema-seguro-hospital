@@ -1,4 +1,4 @@
-# Modelo de amenazas — Clínica Segura v1.1.0
+# Modelo de amenazas — Sistema Seguro: Hospital v1.1.0
 
 > STRIDE, MITRE ATT&CK, X.800 y Defense in Depth se aplican como marcos complementarios. ATT&CK describe comportamientos adversarios; X.800 se usa como taxonomía de servicios/mecanismos, no como certificación.
 

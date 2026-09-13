@@ -1,6 +1,6 @@
 # Matriz de cumplimiento de la entrega
 
-Esta matriz relaciona los requisitos académicos de la actualización con los artefactos de Clínica Segura v1.1.0.
+Esta matriz relaciona los requisitos académicos de la actualización con los artefactos de Sistema Seguro: Hospital v1.1.0.
 
 ## Estructura del documento
 
