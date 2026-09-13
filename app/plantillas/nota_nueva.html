@@ -1,41 +1,15 @@
 {% extends "base.html" %}
 {% block titulo %}Nueva nota — Clínica Segura{% endblock %}
-
 {% block contenido %}
 <a href="/pacientes/{{ paciente.id }}" class="btn-volver">← Volver al historial</a>
-<h1>Nueva nota clínica</h1>
-<p>Paciente: <strong>{{ paciente.nombre }}</strong></p>
-
-{% if error %}
-<p class="alerta alerta-error" role="alert">{{ error }}</p>
-{% endif %}
-
+<h1>Nueva nota clínica</h1><p>Paciente: <strong>{{ paciente.nombre }}</strong></p>
+{% if error %}<p class="alerta alerta-error" role="alert">{{ error }}</p>{% endif %}
 <form method="post" class="formulario">
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
-  <div class="campo">
-    <label for="diagnostico">Diagnóstico</label>
-    <textarea id="diagnostico" name="diagnostico" required rows="3"></textarea>
-  </div>
-
-  <div class="campo">
-    <label for="tratamiento">Tratamiento</label>
-    <textarea id="tratamiento" name="tratamiento" required rows="3"></textarea>
-  </div>
-
+  <div class="campo"><label for="diagnostico">Diagnóstico</label><textarea id="diagnostico" name="diagnostico" required rows="3"></textarea></div>
+  <div class="campo"><label for="tratamiento">Tratamiento</label><textarea id="tratamiento" name="tratamiento" required rows="3"></textarea></div>
   <hr>
-
-  <div class="campo">
-    <label for="contrasena_firma">
-      Contraseña (para firmar digitalmente)
-    </label>
-    <input type="password" id="contrasena_firma" name="contrasena_firma"
-           required autocomplete="current-password">
-    <small>Tu contraseña descifra tu llave privada en memoria para firmar la nota.
-           No se almacena.</small>
-  </div>
-
-  <button type="submit" class="btn-primario">Guardar y firmar →</button>
-  <a href="/pacientes/{{ paciente.id }}" class="btn-secundario">Cancelar</a>
+  <div class="campo"><label for="contrasena_firma">Contraseña (para firmar digitalmente)</label><input type="password" id="contrasena_firma" name="contrasena_firma" required autocomplete="current-password"><small>Tu contraseña descifra tu llave privada en memoria para firmar la nota. No se almacena.</small></div>
+  <button type="submit" class="btn-primario">Guardar y firmar →</button><a href="/pacientes/{{ paciente.id }}" class="btn-secundario">Cancelar</a>
 </form>
 {% endblock %}

@@ -126,7 +126,7 @@
 </head>
 <body>
 
-<button class="btn-imprimir" onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
+<button id="btn-imprimir" class="btn-imprimir">🖨 Imprimir / Guardar PDF</button>
 
 <div class="doc-header">
   <h1>Expediente clínico — {{ paciente.nombre }}</h1>
@@ -185,8 +185,6 @@
   Solo para uso académico — Proyecto Ciberseguridad.
 </div>
 
-<script>
-  document.getElementById('fecha-emision').textContent = new Date().toLocaleString('es-MX');
-</script>
+<script src="/estaticos/app.js"></script>
 </body>
 </html>

@@ -11,10 +11,6 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
 
-    env:
-      DEMO_MODE: "true"
-      SECRET_KEY: "github-actions-demo-only-not-production"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,6 +25,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
+
+      - name: Configure ephemeral test environment
+        shell: bash
+        run: |
+          echo "DEMO_MODE=true" >> "$GITHUB_ENV"
+          echo "DEMO_TOTP_VIEWER=false" >> "$GITHUB_ENV"
+          echo "COOKIE_SECURE=false" >> "$GITHUB_ENV"
+          echo "HTTPS_ONLY=false" >> "$GITHUB_ENV"
+          echo "SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(48))')" >> "$GITHUB_ENV"
+          echo "DEMO_PASSWORD=$(python -c 'import secrets; print(secrets.token_urlsafe(18))')" >> "$GITHUB_ENV"
 
       - name: Run tests
         run: python -m pytest -q

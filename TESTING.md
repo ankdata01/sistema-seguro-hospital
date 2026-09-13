@@ -1,120 +1,84 @@
-# Pruebas locales
+# Pruebas y validación — Clínica Segura v1.1.0
 
-## Objetivo
+## 1. Preparación
 
-Validar que la demo conserva sus propiedades principales antes de una presentación o después de un cambio en el código.
-
-> [!WARNING]
-> Las pruebas son destructivas para `db/clinica.db` y regeneran los archivos de `llaves/`. No utilizar datos reales en este proyecto.
-
-## Entorno de presentación actual — Windows
-
-Repositorio local:
-
-```text
-D:\sc_project
-```
-
-Entorno Python 3.12:
-
-```text
-D:\envs_shared\py312-torch-cu128
-```
-
-En PowerShell:
+La configuración es segura por defecto y no arranca con un secreto embebido. En PowerShell:
 
 ```powershell
-Set-Location D:\sc_project
-
-$PY = if (Test-Path "D:\envs_shared\py312-torch-cu128\Scripts\python.exe") {
-    "D:\envs_shared\py312-torch-cu128\Scripts\python.exe"
-}
-elseif (Test-Path "D:\envs_shared\py312-torch-cu128\python.exe") {
-    "D:\envs_shared\py312-torch-cu128\python.exe"
-}
-else {
-    throw "No se encontró Python dentro de D:\envs_shared\py312-torch-cu128"
-}
-
-& $PY --version
-& $PY -c "import sys; print(sys.executable)"
-```
-
-## Instalar dependencias de desarrollo
-
-Primero puede revisarse el impacto:
-
-```powershell
-& $PY -m pip install --dry-run -r requirements-dev.txt
-```
-
-Instalación:
-
-```powershell
-& $PY -m pip install -r requirements-dev.txt --upgrade-strategy only-if-needed
-& $PY -m pip check
-```
-
-## Configurar la sesión de demo
-
-```powershell
+$PY = "python"
 $env:DEMO_MODE = "true"
+$env:DEMO_TOTP_VIEWER = "false"
+$env:COOKIE_SECURE = "false"
+$env:HTTPS_ONLY = "false"
 $env:SECRET_KEY = & $PY -c "import secrets; print(secrets.token_urlsafe(48))"
+$env:DEMO_PASSWORD = & $PY -c "import secrets; print(secrets.token_urlsafe(18))"
+
+& $PY -m pip install -r requirements-dev.txt
 ```
 
-## Inicializar datos
+`COOKIE_SECURE=false` y `HTTPS_ONLY=false` son exclusivamente para `http://127.0.0.1`. Con HTTPS deben permanecer en `true`.
 
-```powershell
-& $PY -m db.semilla
-```
-
-La semilla debe generar:
-
-- `db/clinica.db`
-- llaves RSA del servidor;
-- llaves privadas cifradas del personal;
-- QR TOTP;
-- cuatro pacientes;
-- seis notas clínicas firmadas;
-- seis entradas iniciales de auditoría.
-
-## Ejecutar la suite
+## 2. Suite automatizada
 
 ```powershell
 & $PY -m pytest -q
 ```
 
-## Cobertura funcional de la suite
+La suite verifica:
 
-| Prueba | Control observado |
-|---|---|
-| Semilla e integridad | Firma de notas + cadena inicial |
-| MFA | Contraseña + TOTP + JWT |
-| Matriz de autorización | RBAC crítico |
-| Logout | Validación CSRF |
-| Rate limiter | 5 fallos / 5 min -> 15 min de bloqueo |
-| Auditoría concurrente | Encadenamiento consistente con múltiples escritores |
-| Manipulación | Detección de `hash_anterior` modificado |
-| Restauración | Invalidación de sesión obsoleta |
+1. semilla e integridad inicial de firmas y cadena;
+2. MFA y emisión de JWT;
+3. autorización RBAC en expedientes/auditoría;
+4. CSRF en logout;
+5. rate limiting de quince minutos tras cinco fallos;
+6. 20 escrituras concurrentes de auditoría sin romper la cadena;
+7. detección de manipulación de `hash_anterior`;
+8. restauración e invalidación de sesión anterior;
+9. TOTP cifrado y PEM privado JWT cifrado en reposo;
+10. detección de modificación de `ip_origen` en auditoría;
+11. invalidación inmediata de sesión al desactivar una cuenta;
+12. cabeceras HTTP y visor TOTP deshabilitado por defecto;
+13. verificación de firmas históricas aunque el médico quede inactivo.
 
-## Levantar servidor después de las pruebas
+> El archivo contiene 12 funciones de prueba; algunas funciones validan más de un control.
+
+## 3. Pruebas manuales recomendadas
+
+### Login y MFA
+
+- contraseña correcta sin TOTP: no debe existir sesión completa;
+- TOTP inválido repetido: debe activar rate limiting;
+- TOTP válido: debe aparecer `LOGIN_OK` tras `PASSWORD_OK`.
+
+### Integridad
+
+- crear nota como doctor;
+- ejecutar `/demo/atacar`;
+- verificar auditoría: debe reportar `contenido_alterado`;
+- intentar DELETE de `audit_log`: trigger debe abortar;
+- alterar `ip_origen` tras deshabilitar el trigger en un entorno de prueba: la cadena debe fallar.
+
+### Autorización
+
+- enfermero: puede consultar expedientes, no auditoría ni creación de notas;
+- administrativo: consulta + auditoría, no firma;
+- admin: gestión + auditoría, no expediente clínico;
+- usuario desactivado: su sesión existente debe redirigir a login.
+
+## 4. Validación estática mínima
 
 ```powershell
-& $PY -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+& $PY -m compileall -q app db tests
 ```
 
-Abrir:
+Antes de publicar GitHub:
 
-```text
-http://127.0.0.1:8000
+```powershell
+git status --ignored
 ```
 
-Para la exposición no se recomienda usar `--host 0.0.0.0` mientras `DEMO_MODE=true`, porque `/demo/codigos` está diseñado para revelar los TOTP de la demo.
+Confirme que `db/clinica.db`, `llaves/`, `.env` y cualquier export de auditoría no estén versionados. Se recomienda además un escáner especializado de secretos en CI.
 
-## CI en GitHub
+## 5. Evidencia
 
-`.github/workflows/tests.yml` ejecuta la suite con Python 3.12 en cada `push` y `pull_request`. El flujo instala `requirements-dev.txt` y ejecuta:
-
-```bash
-python -m pytest -q
-```
+Los resultados de la revisión incluida con esta entrega están en `evidencias/resultado-validacion.txt`. El CI de GitHub genera `SECRET_KEY` y `DEMO_PASSWORD` de forma efímera en cada ejecución; no hay valores secretos estáticos en el workflow.

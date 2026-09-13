@@ -1,17 +1,14 @@
-"""
-Segundo factor TOTP con pyotp.
-Ventana de ±1 intervalo (30 s) para tolerar pequeños desfases de reloj
-sin abrir demasiado la ventana de ataque.
-"""
+"""Segundo factor TOTP (RFC 6238) con secreto protegido en reposo."""
 import pyotp
 
-
-def validar_totp(secret: str, codigo: str) -> bool:
-    """True si el código TOTP de 6 dígitos es válido para el secreto dado."""
-    totp = pyotp.TOTP(secret)
-    return totp.verify(codigo.strip(), valid_window=1)
+from app.seguridad.secretos import descifrar_secreto
 
 
-def codigo_actual(secret: str) -> str:
-    """Devuelve el código TOTP vigente. Solo para el panel de demo."""
-    return pyotp.TOTP(secret).now()
+def validar_totp(secret_protegido: str, codigo: str) -> bool:
+    secreto = descifrar_secreto(secret_protegido)
+    return pyotp.TOTP(secreto).verify(codigo.strip(), valid_window=1)
+
+
+def codigo_actual(secret_protegido: str) -> str:
+    secreto = descifrar_secreto(secret_protegido)
+    return pyotp.TOTP(secreto).now()

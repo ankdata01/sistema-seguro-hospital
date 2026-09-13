@@ -1,18 +1,4 @@
-"""
-Verificador de integridad — dos comprobaciones independientes.
-
-verificar_cadena():
-    Recorre audit_log en orden cronológico, recalcula cada hash_actual
-    y comprueba que hash_anterior coincida con el de la fila previa.
-    Detecta cualquier modificación o inserción fuera de orden.
-
-verificar_firmas():
-    Para cada nota de historial_clinico, reconstruye el contenido canónico,
-    recalcula el hash y verifica la firma RSA-PSS del médico.
-    Distingue dos casos:
-      - contenido_alterado : el hash recalculado ≠ hash_registro guardado
-      - firma_invalida      : el hash coincide pero la firma no verifica
-"""
+"""Verificación independiente de cadena de auditoría y firmas clínicas."""
 from app.datos.repo_auditoria import RepoAuditoria
 from app.datos.repo_historial import RepoHistorial
 from app.datos.repo_personal import RepoPersonal
@@ -22,124 +8,32 @@ from app.seguridad.llaves import cargar_publica_desde_pem
 
 HASH_GENESIS = "0" * 64
 
-
 def verificar_cadena(repo_auditoria: RepoAuditoria) -> dict:
-    """
-    Recorre la bitácora completa y devuelve:
-      {
-        "integra":           bool,
-        "total":             int,       # total de entradas revisadas
-        "primera_fila_rota": str | None # id de la primera entrada con hash roto
-      }
-    """
-    entradas = repo_auditoria.listar_todos()
-    hash_anterior = HASH_GENESIS
-
+    entradas = repo_auditoria.listar_todos(); hash_anterior = HASH_GENESIS
     for entrada in entradas:
-        esperado = calcular_hash(
-            hash_anterior,
-            entrada["id"],
-            entrada["personal_id"],
-            entrada["entidad_afectada"],
-            entrada["entidad_id"] or "",
-            entrada["accion"],
-            entrada["detalle"] or "",
-            entrada["fecha_hora"],
-        )
-        enlace_correcto = entrada["hash_anterior"] == hash_anterior
-        hash_correcto = esperado == entrada["hash_actual"]
-        if not enlace_correcto or not hash_correcto:
-            return {
-                "integra":           False,
-                "total":             len(entradas),
-                "primera_fila_rota": entrada["id"],
-            }
+        esperado = calcular_hash(hash_anterior, entrada["id"], entrada["personal_id"], entrada["entidad_afectada"], entrada["entidad_id"] or "", entrada["accion"], entrada["detalle"] or "", entrada["ip_origen"] or "", entrada["fecha_hora"])
+        if entrada["hash_anterior"] != hash_anterior or esperado != entrada["hash_actual"]:
+            return {"integra": False, "total": len(entradas), "primera_fila_rota": entrada["id"]}
         hash_anterior = entrada["hash_actual"]
+    return {"integra": True, "total": len(entradas), "primera_fila_rota": None}
 
-    return {
-        "integra":           True,
-        "total":             len(entradas),
-        "primera_fila_rota": None,
-    }
-
-
-def verificar_firmas(
-    repo_historial: RepoHistorial,
-    repo_personal: RepoPersonal,
-) -> list[dict]:
-    """
-    Verifica cada nota de historial_clinico.
-    Devuelve la lista de registros problemáticos; vacía si todo está íntegro.
-
-    Cada elemento:
-      {
-        "id":       str,
-        "motivo":   "contenido_alterado" | "firma_invalida" | "medico_no_encontrado",
-        "hash_esperado":  str | None,
-        "hash_guardado":  str | None,
-      }
-    """
-    problemas = []
-
+def verificar_firmas(repo_historial: RepoHistorial, repo_personal: RepoPersonal) -> list[dict]:
+    problemas=[]
     for fila in repo_historial.obtener_todos():
-        personal = repo_personal.obtener_por_id(fila["personal_id"])
+        personal = repo_personal.obtener_por_id_incluyendo_inactivos(fila["personal_id"])
         if personal is None:
-            problemas.append({
-                "id":             fila["id"],
-                "motivo":         "medico_no_encontrado",
-                "hash_esperado":  None,
-                "hash_guardado":  fila["hash_registro"],
-            })
-            continue
-
-        contenido = canonicalizar_nota(
-            fila["paciente_id"],
-            fila["personal_id"],
-            fila["diagnostico"],
-            fila["tratamiento"],
-            fila["fecha"],
-        )
-        h_bytes = hash_de_contenido(contenido)
-        hash_recalculado = h_bytes.hex()
-
-        # Caso 1: el contenido fue alterado (hash no coincide)
+            problemas.append({"id": fila["id"], "motivo": "medico_no_encontrado", "hash_esperado": None, "hash_guardado": fila["hash_registro"]}); continue
+        contenido = canonicalizar_nota(fila["paciente_id"], fila["personal_id"], fila["diagnostico"], fila["tratamiento"], fila["fecha"])
+        h_bytes = hash_de_contenido(contenido); hash_recalculado = h_bytes.hex()
         if hash_recalculado != fila["hash_registro"]:
-            problemas.append({
-                "id":            fila["id"],
-                "motivo":        "contenido_alterado",
-                "hash_esperado": hash_recalculado,
-                "hash_guardado": fila["hash_registro"],
-            })
-            continue
-
-        # Caso 2: el contenido está intacto pero la firma o la llave no verifican
+            problemas.append({"id": fila["id"], "motivo": "contenido_alterado", "hash_esperado": hash_recalculado, "hash_guardado": fila["hash_registro"]}); continue
         try:
-            llave_publica = cargar_publica_desde_pem(personal["llave_publica"])
-            firma_valida = verificar_firma(llave_publica, h_bytes, fila["firma_digital"])
-        except (TypeError, ValueError):
-            firma_valida = False
-
+            llave_publica = cargar_publica_desde_pem(personal["llave_publica"]); firma_valida = verificar_firma(llave_publica, h_bytes, fila["firma_digital"])
+        except (TypeError, ValueError): firma_valida = False
         if not firma_valida:
-            problemas.append({
-                "id":            fila["id"],
-                "motivo":        "firma_invalida",
-                "hash_esperado": hash_recalculado,
-                "hash_guardado": fila["hash_registro"],
-            })
-
+            problemas.append({"id": fila["id"], "motivo": "firma_invalida", "hash_esperado": hash_recalculado, "hash_guardado": fila["hash_registro"]})
     return problemas
 
-
-def verificar_todo(
-    repo_auditoria: RepoAuditoria,
-    repo_historial: RepoHistorial,
-    repo_personal: RepoPersonal,
-) -> dict:
-    """Ejecuta ambas verificaciones y devuelve un resumen unificado."""
-    cadena = verificar_cadena(repo_auditoria)
-    firmas = verificar_firmas(repo_historial, repo_personal)
-    return {
-        "cadena":           cadena,
-        "firmas_invalidas": firmas,
-        "todo_ok":          cadena["integra"] and len(firmas) == 0,
-    }
+def verificar_todo(repo_auditoria: RepoAuditoria, repo_historial: RepoHistorial, repo_personal: RepoPersonal) -> dict:
+    cadena = verificar_cadena(repo_auditoria); firmas = verificar_firmas(repo_historial, repo_personal)
+    return {"cadena": cadena, "firmas_invalidas": firmas, "todo_ok": cadena["integra"] and len(firmas) == 0}

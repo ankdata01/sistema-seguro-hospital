@@ -45,7 +45,7 @@ class ServicioAuth:
     def primer_factor(self, email: str, contrasena: str, ip: str) -> dict:
         """
         Verifica email + contraseña.
-        Audita LOGIN_OK o LOGIN_FALLIDO.
+        Audita PASSWORD_OK o LOGIN_FALLIDO.
         Devuelve el registro del personal si es correcto.
         Lanza CredencialesInvalidas si falla.
         """
@@ -68,7 +68,7 @@ class ServicioAuth:
             personal_id=usuario["id"],
             entidad_afectada="sesion",
             entidad_id=None,
-            accion="LOGIN_OK",
+            accion="PASSWORD_OK",
             detalle="Primer factor correcto — esperando MFA",
             ip=ip,
             fecha_hora=ahora,
@@ -101,6 +101,15 @@ class ServicioAuth:
             raise CodigoMFAInvalido()
 
         token = tokens.emitir(usuario)
+        self._auditar(
+            personal_id=user_id,
+            entidad_afectada="sesion",
+            entidad_id=None,
+            accion="LOGIN_OK",
+            detalle="MFA correcto; sesión emitida",
+            ip=ip,
+            fecha_hora=ahora,
+        )
         return token
 
     def registrar_logout(self, user_id: str, ip: str) -> None:

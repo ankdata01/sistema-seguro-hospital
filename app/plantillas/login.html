@@ -1,30 +1,13 @@
 {% extends "base.html" %}
 {% block titulo %}Iniciar sesión — Clínica Segura{% endblock %}
-
 {% block contenido %}
 <div class="caja-centrada">
-  <h1>Clínica Segura</h1>
-  <p class="subtitulo">Sistema de expediente clínico electrónico</p>
-
-  {% if error %}
-  <p class="alerta alerta-error" role="alert">{{ error }}</p>
-  {% endif %}
-
+  <h1>Clínica Segura</h1><p class="subtitulo">Sistema de expediente clínico electrónico</p>
+  {% if error %}<p class="alerta alerta-error" role="alert">{{ error }}</p>{% endif %}
   <form method="post" action="/login" class="formulario">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
-    <div class="campo">
-      <label for="email">Correo electrónico</label>
-      <input type="email" id="email" name="email"
-             required autocomplete="email" autofocus>
-    </div>
-
-    <div class="campo">
-      <label for="contrasena">Contraseña</label>
-      <input type="password" id="contrasena" name="contrasena"
-             required autocomplete="current-password">
-    </div>
-
+    <div class="campo"><label for="email">Correo electrónico</label><input type="email" id="email" name="email" required autocomplete="email" autofocus></div>
+    <div class="campo"><label for="contrasena">Contraseña</label><input type="password" id="contrasena" name="contrasena" required autocomplete="current-password"></div>
     <button type="submit" class="btn-primario">Continuar →</button>
   </form>
 </div>

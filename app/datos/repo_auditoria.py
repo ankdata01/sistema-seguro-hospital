@@ -56,6 +56,7 @@ class RepoAuditoria:
                 entidad_id or "",
                 accion,
                 detalle or "",
+                ip_origen or "",
                 fecha_hora,
             )
             self._con.execute(

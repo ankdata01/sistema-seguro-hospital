@@ -60,7 +60,7 @@
           {# Eliminar — solo visible si ya está inactivo #}
           {% if not p.activo %}
           <form method="post" action="/admin/usuarios/{{ p.id }}/eliminar" style="display:inline"
-                onsubmit="return confirm('¿Eliminar permanentemente a {{ p.nombre }}? Esta acción no se puede deshacer.')">
+                class="js-confirm-delete" data-confirm="¿Eliminar permanentemente a {{ p.nombre }}? Esta acción no se puede deshacer.">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <button type="submit" class="btn-peligro" style="font-size:0.82rem;padding:0.3rem 0.75rem">
               Eliminar
@@ -80,7 +80,7 @@
 </div>
 
 <div class="aviso-demo" style="margin-top:1.5rem;font-size:0.85rem">
-  <strong>Nota de seguridad:</strong> Al desactivar un usuario su sesión actual expira en cuanto vence
-  el JWT (máx. 30 min). No puede volver a iniciar sesión mientras esté inactivo.
+  <strong>Nota de seguridad:</strong> Al desactivar un usuario, su sesión actual deja de ser aceptada en la siguiente
+  petición protegida. No puede volver a iniciar sesión mientras esté inactivo.
 </div>
 {% endblock %}
