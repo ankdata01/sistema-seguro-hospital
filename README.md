@@ -1,8 +1,8 @@
-# Clínica Segura v1.1.0
+# Sistema Seguro: Hospital v1.1.0
 
 **Demostrador académico de ciberseguridad aplicado a un expediente clínico electrónico.**
 
-Clínica Segura implementa autenticación multifactor, control de acceso por roles, firma digital de notas clínicas y una bitácora encadenada para demostrar **autenticidad, integridad, no repudio y trazabilidad**. Está construido con Python 3.12, FastAPI, Jinja2 y SQLite.
+Sistema Seguro: Hospital implementa autenticación multifactor, control de acceso por roles, firma digital de notas clínicas y una bitácora encadenada para demostrar **autenticidad, integridad, no repudio y trazabilidad**. Está construido con Python 3.12, FastAPI, Jinja2 y SQLite.
 
 > **Alcance:** prototipo académico. No está certificado para información clínica real ni sustituye controles de infraestructura, cumplimiento, continuidad o privacidad exigibles a un sistema sanitario de producción.
 
@@ -40,7 +40,7 @@ Patrones principales: **Repository, Factory, Decorator y Strategy**. El modelo d
 ## Estructura del repositorio
 
 ```text
-clinica-segura-v1.1.0/
+sistema-seguro-hospital-v1.1.0/
 ├── app/                    # aplicación y controles
 ├── db/                     # esquema y semilla
 ├── docs/                   # arquitectura, seguridad y modelo de amenazas

@@ -1,4 +1,4 @@
-CLINICA SEGURA v1.1.0 - ARBOL DE ENTREGA
+SISTEMA SEGURO: HOSPITAL v1.1.0 - ARBOL DE ENTREGA
 Generado: 2026-09-13
 
 .env.example
@@ -11,7 +11,7 @@ TESTING.md
 app/
 db/
 docs/
-entregables/Clinica_Segura_Informe_Final_v1.1.0.docx
+entregables/Sistema_Seguro_Hospital_Informe_Final_v1.1.0.docx
 evidencias/
 generar_informe_latex.py
 llaves/.gitkeep

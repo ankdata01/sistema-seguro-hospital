@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Genera el informe final de Clínica Segura v1.1.0 mediante LaTeX.
+"""Genera el informe final de Sistema Seguro: Hospital v1.1.0 mediante LaTeX.
 
 Uso:
     python generar_informe_latex.py
@@ -38,7 +38,7 @@ PREAMBLE = r"""\documentclass[11pt,a4paper]{article}
 \usepackage{listings}
 \usepackage{titlesec}
 \usepackage{setspace}
-\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,pdfauthor={Clinica Segura},pdftitle={Clinica Segura v1.1.0 - Informe final}}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,pdfauthor={Sistema Seguro: Hospital},pdftitle={Sistema Seguro: Hospital v1.1.0 - Informe final}}
 \setstretch{1.08}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em}
@@ -46,7 +46,7 @@ PREAMBLE = r"""\documentclass[11pt,a4paper]{article}
 \setlist[enumerate]{leftmargin=1.8em,itemsep=0.2em,topsep=0.25em}
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{Clínica Segura v1.1.0}
+\lhead{Sistema Seguro: Hospital v1.1.0}
 \rhead{Informe final de ciberseguridad}
 \cfoot{\thepage}
 \titleformat{\section}{\Large\bfseries}{\thesection.}{0.6em}{}
@@ -159,7 +159,7 @@ def compile_pdf(tex_path: Path) -> Path:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--entrada", default="docs/informe-final.md", help="Markdown fuente")
-    parser.add_argument("--salida", default="Clinica_Segura_Informe_Final_v1.1.0.tex", help="Ruta .tex")
+    parser.add_argument("--salida", default="Sistema_Seguro_Hospital_Informe_Final_v1.1.0.tex", help="Ruta .tex")
     parser.add_argument("--pdf", action="store_true", help="Compilar .tex con pdflatex")
     args = parser.parse_args()
     source = Path(args.entrada).expanduser().resolve(); tex_path = Path(args.salida).expanduser().resolve()

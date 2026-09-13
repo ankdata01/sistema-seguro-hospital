@@ -1,6 +1,6 @@
 # Evidencias de validación
 
-Esta carpeta contiene evidencia textual reproducible de la revisión de Clínica Segura v1.1.0. No debe contener bases de datos, claves privadas, QR TOTP, tokens, capturas con credenciales ni archivos `.env` reales.
+Esta carpeta contiene evidencia textual reproducible de la revisión de Sistema Seguro: Hospital v1.1.0. No debe contener bases de datos, claves privadas, QR TOTP, tokens, capturas con credenciales ni archivos `.env` reales.
 
 ## Reproducción
 

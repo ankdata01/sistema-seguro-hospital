@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block titulo %}Clínica Segura{% endblock %}</title>
+  <title>{% block titulo %}Sistema Seguro: Hospital{% endblock %}</title>
   <link rel="stylesheet" href="/estaticos/estilo.css?v=5">
 </head>
 <body>
 
   {% if usuario is defined and usuario %}
   <header class="barra-nav">
-    <div class="nav-marca">🏥 Clínica Segura</div>
+    <div class="nav-marca">🏥 Sistema Seguro: Hospital</div>
     <nav class="nav-enlaces">
       <a href="/panel">Panel</a>
       {% if usuario.rol in ("doctor", "enfermero", "administrativo") %}
@@ -42,7 +42,7 @@
   </main>
 
   <footer class="pie">
-    <small>Clínica Segura — Proyecto Ciberseguridad &middot; Solo para uso académico</small>
+    <small>Sistema Seguro: Hospital — Proyecto Ciberseguridad &middot; Solo para uso académico</small>
   </footer>
 
 </body>

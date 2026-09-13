@@ -33,8 +33,8 @@ HTTPS_ONLY = _bool_env("HTTPS_ONLY", COOKIE_SECURE)
 
 JWT_ALGORITMO = "RS256"
 JWT_EXPIRACION_MINUTOS = 30
-JWT_ISSUER = "clinica-segura"
-JWT_AUDIENCE = "clinica-segura-web"
+JWT_ISSUER = "sistema-seguro-hospital"
+JWT_AUDIENCE = "sistema-seguro-hospital-web"
 
 COOKIE_PREFACTOR_NOMBRE = "pre_auth"
 COOKIE_PREFACTOR_SEGUNDOS = 300

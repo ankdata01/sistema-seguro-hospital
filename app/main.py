@@ -19,7 +19,7 @@ from app.presentacion.dependencias import (
 # Instancia principal
 # ---------------------------------------------------------------------------
 app = FastAPI(
-    title="Clínica Segura",
+    title="Sistema Seguro: Hospital",
     description="Expediente clínico con autenticidad, no repudio y trazabilidad.",
     version="1.1.0",
     docs_url=None,
