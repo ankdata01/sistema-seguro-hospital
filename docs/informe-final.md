@@ -93,7 +93,7 @@ No cifra integralmente los campos clínicos de SQLite, no ofrece alta disponibil
 |---|---|---|
 | Presentación | `app/presentacion/` | Rutas HTTP, formularios, cookies, CSRF, Jinja2 |
 | Autenticación | `app/autenticacion/` | Argon2id, TOTP, preauth, JWT y contraseña |
-| Clínica | `app/clinico/` | Dominio clínico |
+| Dominio clínico | `app/clinico/` | Modelos y operaciones clínicas |
 | Seguridad | `app/seguridad/` | Firmas, llaves, cifrado, hash chain, verificación, rate limiting, headers |
 | Datos | `app/datos/` | SQLite y repositorios parametrizados |
 | Ensamblado | `app/fabrica.py` | Construcción de repositorios, servicios y decoradores |

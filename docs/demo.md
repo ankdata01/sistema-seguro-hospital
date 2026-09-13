@@ -16,7 +16,7 @@ $env:DEMO_PASSWORD
 & $PY -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
-Usuarios de prueba: `admin@clinica.mx`, `laura.mendez@clinica.mx`, `carlos.rios@clinica.mx`, `ana.torres@clinica.mx`. La contraseña es el valor efímero de `DEMO_PASSWORD` de la sesión.
+Usuarios de prueba: `admin@hospital.test`, `laura.mendez@hospital.test`, `carlos.rios@hospital.test`, `ana.torres@hospital.test`. La contraseña es el valor efímero de `DEMO_PASSWORD` de la sesión.
 
 ## Secuencia de 10–12 minutos
 
