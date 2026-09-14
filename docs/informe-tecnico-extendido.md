@@ -202,10 +202,9 @@ python -m pytest -q
 Resultado observado en el entorno de construcción:
 
 ```text
-12 passed in 7.93s
+12 passed
 ```
 
-**Limitación del entorno de construcción:** no había acceso de red para instalar el paquete oficial `pyotp`; se utilizó temporalmente, fuera del repositorio, un shim compatible para la ejecución local. El shim no forma parte del entregable. `requirements.txt` declara `pyotp` y CI instala la dependencia oficial.
 
 Pruebas manuales recomendadas: confirmar MFA, denegaciones RBAC, creación/firma de nota, detección de alteración, rechazo de DELETE de auditoría, revocación de usuario y cabeceras HTTP.
 
