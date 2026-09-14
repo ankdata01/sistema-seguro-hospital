@@ -84,15 +84,57 @@ def crear_router(plantillas: Jinja2Templates) -> APIRouter:
         return RedirectResponse(url=f"/demo?trigger={mensaje_trigger[:80]}", status_code=303)
 
     @router.post("/restaurar", response_class=HTMLResponse)
-    async def restaurar(request: Request, con=Depends(dep_conexion), usuario: dict = Depends(usuario_actual)):
+    async def restaurar(
+        request: Request,
+        con=Depends(dep_conexion),
+        usuario: dict = Depends(usuario_actual),
+    ):
         denegado = _autorizar_demo(con, usuario, request)
-        if denegado: return denegado
-        if not os.getenv("DEMO_PASSWORD", "").strip(): return RedirectResponse(url="/demo?restaurado=requires_password_env", status_code=303)
+        if denegado:
+            return denegado
+
+        if not os.getenv("DEMO_PASSWORD", "").strip():
+            return RedirectResponse(
+                url="/demo?restaurado=requires_password_env",
+                status_code=303,
+            )
+
         form = await request.form()
-        if not validar_csrf(request, str(form.get("csrf_token", ""))): return RedirectResponse(url="/demo", status_code=303)
-        resultado = subprocess.run([sys.executable, "-m", "db.semilla"], capture_output=True, text=True, cwd=str(DB_PATH.parent.parent))
-        if resultado.returncode != 0: return RedirectResponse(url="/demo?restaurado=error", status_code=303)
-        resp = RedirectResponse(url="/login?restaurado=ok", status_code=303); resp.delete_cookie(COOKIE_TOKEN_NOMBRE); resp.delete_cookie(COOKIE_PREFACTOR_NOMBRE); resp.delete_cookie(COOKIE_CSRF); return resp
+
+        if not validar_csrf(request, str(form.get("csrf_token", ""))):
+            return RedirectResponse(url="/demo", status_code=303)
+
+        # IMPORTANTE EN WINDOWS:
+        # liberar el handle de SQLite antes de que db.semilla
+        # intente eliminar y reconstruir hospital.db.
+        con.close()
+
+        resultado = subprocess.run(
+            [sys.executable, "-m", "db.semilla"],
+            capture_output=True,
+            text=True,
+            cwd=str(DB_PATH.parent.parent),
+        )
+
+        if resultado.returncode != 0:
+            print("ERROR /demo/restaurar")
+            print("STDOUT:")
+            print(resultado.stdout)
+            print("STDERR:")
+            print(resultado.stderr)
+            return RedirectResponse(
+                url="/demo?restaurado=error",
+                status_code=303,
+            )
+
+        resp = RedirectResponse(
+            url="/login?restaurado=ok",
+            status_code=303,
+        )
+        resp.delete_cookie(COOKIE_TOKEN_NOMBRE)
+        resp.delete_cookie(COOKIE_PREFACTOR_NOMBRE)
+        resp.delete_cookie(COOKIE_CSRF)
+        return resp
 
     @router.get("/codigos", response_class=HTMLResponse)
     async def ver_codigos(request: Request, con=Depends(dep_conexion)):
