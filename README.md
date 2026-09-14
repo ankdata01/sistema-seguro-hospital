@@ -53,7 +53,6 @@ sistema-seguro-hospital-v1.1.0/
 ├── README.md
 ├── SECURITY.md
 ├── TESTING.md
-├── generar_informe_latex.py
 └── requirements*.txt
 ```
 
@@ -139,7 +138,6 @@ Consulte [`TESTING.md`](TESTING.md) y [`evidencias/README.md`](evidencias/README
 - [`docs/demo.md`](docs/demo.md) — guion de demostración.
 - [`docs/anexos-codigo.md`](docs/anexos-codigo.md) — índice de anexos/código y evidencias.
 - [`docs/matriz-cumplimiento.md`](docs/matriz-cumplimiento.md) — trazabilidad requisito → artefacto.
-- [`generar_informe_latex.py`](generar_informe_latex.py) — generador LaTeX/Python autocontenido.
 - [`SECURITY.md`](SECURITY.md) — reglas de manejo seguro del repositorio.
 
 ## Limitaciones explícitas
