@@ -45,7 +45,6 @@ sistema-seguro-hospital-v1.1.0/
 ├── db/                     # esquema y semilla
 ├── docs/                   # arquitectura, seguridad y modelo de amenazas
 ├── evidencias/             # resultados de validación reproducibles
-├── entregables/            # DOCX editable de la entrega
 ├── llaves/                 # generado localmente; ignorado por Git
 ├── tests/                  # pruebas de integración y seguridad
 ├── .github/workflows/      # CI sin secretos estáticos
@@ -130,7 +129,7 @@ Consulte [`TESTING.md`](TESTING.md) y [`evidencias/README.md`](evidencias/README
 
 ## Documentación técnica
 
-- [`docs/informe-final.md`](docs/informe-final.md) — documento académico completo.
+- [`docs/informe-tecnico-extendido.md`](docs/informe-tecnico-extendido.md) — documentación técnica complementaria del proyecto.
 - [`docs/modelo-amenazas.md`](docs/modelo-amenazas.md) — STRIDE, MITRE ATT&CK, X.800 y Defense in Depth.
 - [`docs/arquitectura.md`](docs/arquitectura.md) — capas, patrones y fronteras de confianza.
 - [`docs/seguridad.md`](docs/seguridad.md) — catálogo de controles.

@@ -22,7 +22,7 @@
 
 ### Repositorio y documentación
 - Añadidos STRIDE, MITRE ATT&CK, X.800 y Defense in Depth.
-- Añadidos `SECURITY.md`, `docs/informe-final.md` y carpeta `evidencias/`.
+- Añadidos `SECURITY.md`, documentación técnica extendida y carpeta `evidencias/`.
 - CI genera secretos efímeros; no contiene claves estáticas.
 - Suite ampliada a 12 pruebas de integración/seguridad.
 

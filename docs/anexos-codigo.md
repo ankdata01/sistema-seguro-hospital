@@ -18,7 +18,7 @@ La carpeta `evidencias/` contiene el resultado de validación y las instruccione
 
 ## E. Documentación
 
-- `docs/informe-final.md`: documento académico completo.
+- `docs/informe-tecnico-extendido.md`: documentación técnica complementaria.
 - `docs/modelo-amenazas.md`: STRIDE, ATT&CK, X.800 y Defense in Depth.
 - `docs/arquitectura.md`: arquitectura y fronteras.
 - `docs/seguridad.md`: catálogo de controles.

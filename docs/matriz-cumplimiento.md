@@ -6,7 +6,7 @@ Esta matriz relaciona los requisitos académicos de la actualización con los ar
 
 | Requisito | Ubicación | Estado |
 |---|---|---|
-| Portada | `docs/informe-final.md` + artefacto DOCX de entrega | Cumplido |
+| Portada | Informe académico final entregado externamente en PDF | Cumplido |
 | Resumen | Informe final | Cumplido |
 | Introducción | Informe final | Cumplido |
 | Descripción del sistema | Informe final | Cumplido |
@@ -35,4 +35,4 @@ Esta matriz relaciona los requisitos académicos de la actualización con los ar
 
 Se endurecieron secretos, TOTP, llaves JWT, claims, revalidación de sesiones, cadena de auditoría, cookies/CSRF, cabeceras HTTP, rutas de demo, manejo de contraseñas, auditoría de denegaciones y verificación histórica de firmas. El detalle está en `docs/revision-seguridad.md`.
 
-El DOCX editable se mantiene como artefacto de entrega separado; el contenido versionado y auditable es `docs/informe-final.md`, y el PDF/LaTeX puede regenerarse mediante `generar_informe_latex.py`.
+El informe académico final se entrega externamente en PDF. El repositorio conserva el código, la documentación técnica complementaria y las evidencias reproducibles de validación. `docs/informe-tecnico-extendido.md` funciona como referencia técnica ampliada.
